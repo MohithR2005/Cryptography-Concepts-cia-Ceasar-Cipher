@@ -1,100 +1,70 @@
-import java.util.*;
+# -------- Hash Function --------
+def generate_key(text):
+    total = 0
 
-public class CaesarCipherWithHash {
+    for ch in text:
+        total += ord(ch)
 
-    // -------- Hash Function --------
-    public static int generateKey(String text) {
-        int sum = 0;
+    return total % 26
 
-        for (int i = 0; i < text.length(); i++) {
-            sum += text.charAt(i);
-        }
 
-        return sum % 26;
-    }
+# -------- Encryption --------
+def encrypt(text, key):
+    result = ""
 
-    // -------- Encryption --------
-    public static String encrypt(String text, int key) {
-        StringBuilder result = new StringBuilder();
+    for ch in text:
+        if ch.isupper():
+            result += chr((ord(ch) - ord('A') + key) % 26 + ord('A'))
+        elif ch.islower():
+            result += chr((ord(ch) - ord('a') + key) % 26 + ord('a'))
+        else:
+            result += ch
 
-        for (int i = 0; i < text.length(); i++) {
-            char ch = text.charAt(i);
+    return result
 
-            if (Character.isUpperCase(ch)) {
-                result.append((char) ((ch - 'A' + key) % 26 + 'A'));
-            }
-            else if (Character.isLowerCase(ch)) {
-                result.append((char) ((ch - 'a' + key) % 26 + 'a'));
-            }
-            else {
-                result.append(ch);
-            }
-        }
 
-        return result.toString();
-    }
+# -------- Decryption --------
+def decrypt(text, key):
+    result = ""
 
-    // -------- Decryption --------
-    public static String decrypt(String text, int key) {
-        StringBuilder result = new StringBuilder();
+    for ch in text:
+        if ch.isupper():
+            result += chr((ord(ch) - ord('A') - key + 26) % 26 + ord('A'))
+        elif ch.islower():
+            result += chr((ord(ch) - ord('a') - key + 26) % 26 + ord('a'))
+        else:
+            result += ch
 
-        for (int i = 0; i < text.length(); i++) {
-            char ch = text.charAt(i);
+    return result
 
-            if (Character.isUpperCase(ch)) {
-                result.append((char) ((ch - 'A' - key + 26) % 26 + 'A'));
-            }
-            else if (Character.isLowerCase(ch)) {
-                result.append((char) ((ch - 'a' - key + 26) % 26 + 'a'));
-            }
-            else {
-                result.append(ch);
-            }
-        }
 
-        return result.toString();
-    }
+# -------- Main --------
+def main():
+    print("1. Encryption")
+    print("2. Decryption")
+    choice = int(input("Enter choice: "))
 
-    // -------- Main --------
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
+    if choice == 1:
+        plain_text = input("Enter Plain Text: ")
 
-        System.out.println("1. Encryption");
-        System.out.println("2. Decryption");
-        System.out.print("Enter choice: ");
-        int choice = sc.nextInt();
-        sc.nextLine();
+        key = generate_key(plain_text)
+        print("Generated Key (Hash):", key)
 
-        switch (choice) {
+        cipher_text = encrypt(plain_text, key)
+        print("Encrypted Text:", cipher_text)
 
-            case 1:
-                System.out.print("Enter Plain Text: ");
-                String plainText = sc.nextLine();
+        print("NOTE: Save this key for decryption!")
 
-                int key = generateKey(plainText);
-                System.out.println("Generated Key (Hash): " + key);
+    elif choice == 2:
+        cipher = input("Enter Cipher Text: ")
+        user_key = int(input("Enter Key used during encryption: "))
 
-                String cipherText = encrypt(plainText, key);
-                System.out.println("Encrypted Text: " + cipherText);
+        decrypted = decrypt(cipher, user_key)
+        print("Decrypted Text:", decrypted)
 
-                System.out.println("NOTE: Save this key for decryption!");
-                break;
+    else:
+        print("Invalid choice!")
 
-            case 2:
-                System.out.print("Enter Cipher Text: ");
-                String cipher = sc.nextLine();
 
-                System.out.print("Enter Key used during encryption: ");
-                int userKey = sc.nextInt();
-
-                String decrypted = decrypt(cipher, userKey);
-                System.out.println("Decrypted Text: " + decrypted);
-                break;
-
-            default:
-                System.out.println("Invalid choice!");
-        }
-
-        sc.close();
-    }
-}
+if __name__ == "__main__":
+    main()
